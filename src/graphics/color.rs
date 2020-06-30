@@ -1,7 +1,5 @@
-use super::vec3::Vec3;
-
-pub type Color = Vec3;
-
+use super::vec3::Color;
+#[allow(dead_code)]
 pub fn write_color(pixel_color: Color) {
   println!(
     "{} {} {}",

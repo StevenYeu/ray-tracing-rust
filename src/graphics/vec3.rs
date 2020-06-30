@@ -2,6 +2,7 @@
 use std::io::{self, Write};
 use std::ops;
 
+#[derive(Copy, Clone)]
 pub struct Vec3 {
   pub e: [f64; 3],
 }
@@ -31,8 +32,8 @@ impl Vec3 {
     return self.length_squared().sqrt();
   }
 
-  pub fn dot(&self, v: Vec3) -> f64 {
-    return (v.e[0] * self.e[0]) + (v.e[1] * self.e[1]) + (v.e[2] * self.e[2]);
+  pub fn dot(u: Vec3, v: Vec3) -> f64 {
+    return (v.e[0] * u.e[0]) + (v.e[1] * u.e[1]) + (v.e[2] * u.e[2]);
   }
 
   pub fn cross(&self, v: Vec3) -> Vec3 {
@@ -50,6 +51,10 @@ impl Vec3 {
       return Err(e);
     }
     Ok(())
+  }
+
+  pub fn unit_vector(v: Vec3) -> Vec3 {
+    return v / v.length();
   }
 }
 
@@ -140,18 +145,16 @@ impl ops::Mul<Vec3> for Vec3 {
   }
 }
 
-impl ops::Mul<f64> for Vec3 {
-  type Output = Self;
-
-  fn mul(self, rhs: f64) -> Self {
-    return Vec3::new(self.e[0] * rhs, self.e[1] * rhs, self.e[2] * rhs);
+impl ops::Mul<Vec3> for f64 {
+  type Output = Vec3;
+  fn mul(self, rhs: Vec3) -> Vec3 {
+    return Vec3::new(self * rhs[0], self * rhs[1], self * rhs[2]);
   }
 }
 
-impl ops::Mul<Vec3> for f64 {
-  type Output = Vec3;
-
-  fn mul(self, rhs: Vec3) -> Vec3 {
+impl ops::Mul<f64> for Vec3 {
+  type Output = Self;
+  fn mul(self, rhs: f64) -> Vec3 {
     return rhs * self;
   }
 }
@@ -163,5 +166,5 @@ impl ops::Div<f64> for Vec3 {
   }
 }
 
-// type Color = Vec3;
-// type Point = Vec3;
+pub type Color = Vec3;
+pub type Point = Vec3;
