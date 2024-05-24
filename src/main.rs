@@ -18,15 +18,23 @@ fn hit_sphere(center: Point, radius: f64, r: Ray) -> f64 {
     }
 }
 
-fn ray_color(r: Ray) -> Color {
-    let mut t = hit_sphere(Point::new(0.0, 0.0, -1.0), 0.5, r);
+fn hit_cub(center: Point, length: f64, r: Ray) -> f64 {
+
+}
+
+fn color_sphere(r: Ray) -> Color {
+    let t = hit_sphere(Point::new(0.0, 0.0, -1.0), 0.5, r);
+
+    // Color Shape
     if t > 0.0 {
         let n = Vec3::unit_vector(r.at(t) - Vec3::new(0.0, 0.0, -1.0));
         return 0.5 * Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0);
     }
     let unit_direction = Vec3::unit_vector(r.direction());
-    t = 0.5 * (unit_direction.y() + 1.0);
-    return ((1.0 - t) * Color::new(1.0, 1.0, 1.0)) + (t * Color::new(0.5, 0.7, 1.0));
+    // Background Gradient Direction
+    let tb = 0.5 * (unit_direction.x() + 1.0);
+    // Baclground Color
+    return ((1.0 - tb) * Color::new(0.922, 0.435, 0.573)) + (tb * Color::new(0.192, 0.455, 0.561));
 }
 
 fn main() {
@@ -39,11 +47,13 @@ fn main() {
     let viewport_width = aspect_ratio * viewport_height;
     let focal_legth = 1.0;
 
+    // Position of Camera/Viewport
     let origin = Point::new(0.0, 0.0, 0.0);
     let horizontal = Vec3::new(viewport_width, 0.0, 0.0);
     let veritcal = Vec3::new(0.0, viewport_height, 0.0);
     let lower_left_corner =
         origin - (horizontal / 2.0) - (veritcal / 2.0) - Vec3::new(0.0, 0.0, focal_legth);
+
     for j in (0..(image_height)).rev() {
         eprintln!("\rScanlines reamning: {} ", j);
         for i in 0..image_width {
@@ -53,27 +63,9 @@ fn main() {
                 origin,
                 lower_left_corner + u * horizontal + v * veritcal - origin,
             );
-            let pixel_color = ray_color(r);
+            let pixel_color = color_sphere(r);
             write_color(pixel_color);
         }
     }
     eprintln!("\nDone\n");
 }
-
-// fn image() {
-//   let width = 256;
-//   let height = 256;
-//   println!("P3\n{} {}\n255", width, height);
-
-//   for j in (-1..(width - 1)).rev() {
-//     eprintln!("\rScanlines reamning: {} ", j);
-//     for i in (0..height).rev() {
-//       let r = (i as f64) / ((width - 1) as f64);
-//       let g = (j as f64) / ((width - 1) as f64);
-//       let b = 0.25;
-//       let pixel_color = Color::new(r, g, b);
-//       write_color(pixel_color);
-//     }
-//   }
-//   eprintln!("\nDone\n");
-// }
