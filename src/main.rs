@@ -1,9 +1,5 @@
 mod graphics;
-use graphics::color::write_color;
-use graphics::ray::Ray;
-use graphics::vec3::Color;
-use graphics::vec3::Point;
-use graphics::vec3::Vec3;
+use graphics::{color::{write_color, Color}, ray::Ray, vec3::{Point, Vec3}};
 
 fn hit_sphere(center: Point, radius: f64, r: Ray) -> f64 {
     let oc = r.origin() - center;
@@ -18,8 +14,9 @@ fn hit_sphere(center: Point, radius: f64, r: Ray) -> f64 {
     }
 }
 
+#[allow(dead_code)]
 fn hit_cub(center: Point, length: f64, r: Ray) -> f64 {
-
+    return 0.0;
 }
 
 fn color_sphere(r: Ray) -> Color {
