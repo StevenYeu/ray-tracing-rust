@@ -1,37 +1,41 @@
 mod graphics;
-use graphics::{color::{write_color, Color}, ray::Ray, vec3::{Point, Vec3}};
+use graphics::{
+    color::write_color,
+    ray::Ray,
+    vec3::{Color, Point, Vec3},
+};
 
 fn hit_sphere(center: Point, radius: f64, r: Ray) -> f64 {
-    let oc = r.origin() - center;
+    let oc = center - r.origin();
     let a = r.direction().length_squared();
-    let half_b = Vec3::dot(oc, r.direction());
-    let c = oc.length_squared() - radius * radius;
-    let discriminat = (half_b * half_b) - (a * c);
+    let h = Vec3::dot(oc, r.direction());
+    let c = oc.length_squared() - (radius * radius);
+    let discriminat = (h * h) - (a * c);
     if discriminat < 0.0 {
         return -1.0;
     } else {
-        return (-half_b - discriminat.sqrt()) / a;
+        return (h - discriminat.sqrt()) / a;
     }
-}
-
-#[allow(dead_code)]
-fn hit_cub(center: Point, length: f64, r: Ray) -> f64 {
-    return 0.0;
 }
 
 fn color_sphere(r: Ray) -> Color {
     let t = hit_sphere(Point::new(0.0, 0.0, -1.0), 0.5, r);
 
-    // Color Shape
+    // Color Shape based on surface normal
     if t > 0.0 {
         let n = Vec3::unit_vector(r.at(t) - Vec3::new(0.0, 0.0, -1.0));
         return 0.5 * Color::new(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0);
     }
+
     let unit_direction = Vec3::unit_vector(r.direction());
     // Background Gradient Direction
     let tb = 0.5 * (unit_direction.x() + 1.0);
     // Baclground Color
-    return ((1.0 - tb) * Color::new(0.922, 0.435, 0.573)) + (tb * Color::new(0.192, 0.455, 0.561));
+    let mut color_one = Color::new(49.0, 116.0, 143.0);
+    color_one.normalize();
+    let mut color_two = Color::new(235.0, 111.0, 146.0); 
+    color_two.normalize();
+    return ((1.0 - tb) * color_two) + (tb * color_one);
 }
 
 fn main() {
