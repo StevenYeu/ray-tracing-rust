@@ -30,7 +30,7 @@ fn color_sphere(r: Ray) -> Color {
     let unit_direction = Vec3::unit_vector(r.direction());
     // Background Gradient Direction
     let tb = 0.5 * (unit_direction.x() + 1.0);
-    // Baclground Color
+    // Background Color
     let mut color_one = Color::new(49.0, 116.0, 143.0);
     color_one.normalize();
     let mut color_two = Color::new(235.0, 111.0, 146.0); 
